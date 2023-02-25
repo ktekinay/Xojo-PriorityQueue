@@ -7,8 +7,10 @@ Inherits TestController
 		  
 		  Var group As TestGroup
 		  
-		  group = New XojoUnitTests(Self, "Assertion")
-		  group = New XojoUnitFailTests(Self, "Always Fail")
+		  'group = New XojoUnitTests(Self, "Assertion")
+		  'group = New XojoUnitFailTests(Self, "Always Fail")
+		  
+		  group = new PriorityQueueTests( self, "PriorityQueue" )
 		  
 		End Sub
 	#tag EndEvent
