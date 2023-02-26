@@ -27,6 +27,35 @@ Inherits TestGroup
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Sub ClearTest()
+		  var pq as new PriorityQueue_MTC
+		  
+		  for i as integer = 1 to 1000
+		    pq.Add i, i
+		  next
+		  
+		  var spy as new ObjectSpy( pq )
+		  var parr() as integer = spy.Priorities
+		  var pCount as integer = parr.Count
+		  var varr() as object = spy.Values
+		  var vCount as integer = varr.Count
+		  
+		  Assert.AreEqual pCount, vCount
+		  
+		  pq.Clear
+		  
+		  parr = spy.Priorities
+		  var pCount2 as integer = parr.Count
+		  varr = spy.Values
+		  vCount = varr.Count
+		  
+		  Assert.AreEqual pCount2, vCount
+		  Assert.IsTrue pCount2 < pCount
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Sub ConstructorTest()
 		  var pq as new PriorityQueue_MTC
 		  var spy as new ObjectSpy( pq )
