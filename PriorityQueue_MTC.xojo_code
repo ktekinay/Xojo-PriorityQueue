@@ -1,6 +1,6 @@
 #tag Class
 Protected Class PriorityQueue_MTC
-	#tag Method, Flags = &h0
+	#tag Method, Flags = &h0, Description = 41646420612076616C756520746F2074686520717565756520776974682074686520676976656E205072696F726974792E
 		Sub Add(priority As Integer, value As Variant)
 		  #if not DebugBuild
 		    #pragma BackgroundTasks false
@@ -60,7 +60,7 @@ Protected Class PriorityQueue_MTC
 		End Sub
 	#tag EndMethod
 
-	#tag Method, Flags = &h0
+	#tag Method, Flags = &h0, Description = 526573657473207468652051756575652E
 		Sub Clear()
 		  Priorities.ResizeTo 127
 		  
@@ -91,7 +91,7 @@ Protected Class PriorityQueue_MTC
 		End Sub
 	#tag EndMethod
 
-	#tag Method, Flags = &h0
+	#tag Method, Flags = &h0, Description = 52656D6F766520616E642072657475726E207468652056616C75652061742074686520746F70206F66207468652051756575652E
 		Function Pop() As Variant
 		  #if not DebugBuild
 		    #pragma BackgroundTasks false
@@ -201,7 +201,7 @@ Protected Class PriorityQueue_MTC
 	#tag EndMethod
 
 
-	#tag ComputedProperty, Flags = &h0
+	#tag ComputedProperty, Flags = &h0, Description = 546865206E756D626572206F66206974656D7320696E207468652051756575652E
 		#tag Getter
 			Get
 			  return LastIndex + 1
@@ -215,7 +215,7 @@ Protected Class PriorityQueue_MTC
 		Private LastIndex As Integer = -1
 	#tag EndProperty
 
-	#tag ComputedProperty, Flags = &h0
+	#tag ComputedProperty, Flags = &h0, Description = 546865205072696F72697479206F662056616C75652061742074686520746F70206F66207468652071756575652E
 		#tag Getter
 			Get
 			  if LastIndex = -1 then
@@ -236,7 +236,7 @@ Protected Class PriorityQueue_MTC
 		PeekPriority As Integer
 	#tag EndComputedProperty
 
-	#tag ComputedProperty, Flags = &h0
+	#tag ComputedProperty, Flags = &h0, Description = 5468652056616C75652061742074686520746F70206F66207468652051756575652E
 		#tag Getter
 			Get
 			  return if( LastIndex = -1, nil, Values( 0 ) )
