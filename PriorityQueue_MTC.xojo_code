@@ -19,6 +19,11 @@ Protected Class PriorityQueue_MTC
 		    Values.ResizeTo Priorities.LastIndex
 		  end if
 		  
+		  //
+		  // Adjust
+		  //
+		  priority = ( PriorityBase - priority ) * PriorityMultiplier
+		  
 		  Priorities( LastIndex ) = priority
 		  Values( LastIndex ) = value
 		  
@@ -67,8 +72,20 @@ Protected Class PriorityQueue_MTC
 		End Sub
 	#tag EndMethod
 
-	#tag Method, Flags = &h0
-		Sub Constructor()
+	#tag Method, Flags = &h0, Description = 5768656E206D696E546F4D61782020697320547275652C2077696C6C2072657475726E2061205072696F726974792076616C7565206F662031206265666F726520612076616C7565206F66203130302E205768656E2046616C73652C2076616C7565203130302077696C6C2062652072657475726E6564206265666F72652076616C756520312E
+		Sub Constructor(minToMax As Boolean = True)
+		  if minToMax then
+		    PriorityBase = 0
+		    PriorityMultiplier = -1
+		  else
+		    #if Target64Bit
+		      PriorityBase = &h7FFFFFFFFFFFFFFF
+		    #else
+		      PriorityBase = &h7FFFFFFF
+		    #endif
+		    PriorityMultiplier = 1
+		  end if
+		  
 		  Clear
 		  
 		End Sub
@@ -201,7 +218,18 @@ Protected Class PriorityQueue_MTC
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
-			  return if( LastIndex = -1, -1, Priorities( 0 ) )
+			  if LastIndex = -1 then
+			    return -1
+			  end if
+			  
+			  var priority as integer = Priorities( 0 )
+			  
+			  //
+			  // Adjust
+			  //
+			  priority = ( PriorityBase - priority ) * PriorityMultiplier
+			  
+			  return priority
 			  
 			End Get
 		#tag EndGetter
@@ -220,6 +248,14 @@ Protected Class PriorityQueue_MTC
 
 	#tag Property, Flags = &h21
 		Private Priorities() As Integer
+	#tag EndProperty
+
+	#tag Property, Flags = &h21
+		Private PriorityBase As Integer
+	#tag EndProperty
+
+	#tag Property, Flags = &h21
+		Private PriorityMultiplier As Integer
 	#tag EndProperty
 
 	#tag Property, Flags = &h21

@@ -143,6 +143,40 @@ Inherits TestGroup
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Sub MaxToMinTest()
+		  var arrCount as integer = 100
+		  var sourceArr() as integer
+		  for i as integer = 1 to arrCount
+		    sourceArr.Add i
+		  next
+		  
+		  for reps as integer = 1 to 10
+		    sourceArr.Shuffle
+		    
+		    var pq as new PriorityQueue_MTC( false )
+		    
+		    for each p as integer in sourceArr
+		      pq.Add p, p
+		    next
+		    
+		    Assert.AreEqual arrCount, pq.Count
+		    
+		    var spy as new ObjectSpy( pq )
+		    Assert.AreEqual "", spy.Validate.StringValue
+		    
+		    sourceArr.Sort
+		    
+		    for i as integer = sourceArr.LastIndex downto 0
+		      Assert.AreEqual sourceArr( i ), pq.PeekPriority
+		      var value as integer = pq.Pop
+		      Assert.AreEqual sourceArr( i ), value
+		    next
+		  next
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Sub PeekTest()
 		  var pq as new PriorityQueue_MTC
 		  pq.Add 10, 10000
