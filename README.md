@@ -75,6 +75,6 @@ All comments are also welcome.
 
 ## Release Notes
 
-**1.0** (____)
+#### 1.0 (Feb. 26, 2023)
 
 - Initial release.
