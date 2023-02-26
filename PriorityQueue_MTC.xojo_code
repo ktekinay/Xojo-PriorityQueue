@@ -263,6 +263,10 @@ Protected Class PriorityQueue_MTC
 	#tag EndProperty
 
 
+	#tag Constant, Name = kVersion, Type = String, Dynamic = False, Default = \"1.0", Scope = Public
+	#tag EndConstant
+
+
 	#tag ViewBehavior
 		#tag ViewProperty
 			Name="Name"
