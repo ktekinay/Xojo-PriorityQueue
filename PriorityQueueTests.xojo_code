@@ -41,6 +41,7 @@ Inherits TestGroup
 		  var vCount as integer = varr.Count
 		  
 		  Assert.AreEqual pCount, vCount
+		  Assert.AreEqual 1000, pq.Count
 		  
 		  pq.Clear
 		  
@@ -51,6 +52,7 @@ Inherits TestGroup
 		  
 		  Assert.AreEqual pCount2, vCount
 		  Assert.IsTrue pCount2 < pCount
+		  Assert.AreEqual 0, pq.Count
 		  
 		End Sub
 	#tag EndMethod
