@@ -1,7 +1,7 @@
 #tag Class
 Protected Class PriorityQueue_MTC
 	#tag Method, Flags = &h0, Description = 41646420612076616C756520746F2074686520717565756520776974682074686520676976656E205072696F726974792E
-		Sub Add(priority As Integer, value As Variant)
+		Sub Add(priority As Double, value As Variant)
 		  #if not DebugBuild
 		    #pragma BackgroundTasks false
 		    #pragma BoundsChecking false
@@ -19,11 +19,6 @@ Protected Class PriorityQueue_MTC
 		    Values.ResizeTo Priorities.LastIndex
 		  end if
 		  
-		  //
-		  // Adjust
-		  //
-		  priority = ( PriorityBase - priority ) * PriorityMultiplier
-		  
 		  Priorities( LastIndex ) = priority
 		  Values( LastIndex ) = value
 		  
@@ -34,9 +29,9 @@ Protected Class PriorityQueue_MTC
 		  
 		  while currentIndex <> 0
 		    var parentIndex as integer = ( currentIndex - 1 ) \ 2
-		    var parentPriority as integer = Priorities( parentIndex )
+		    var parentPriority as double = Priorities( parentIndex )
 		    
-		    if priority >= parentPriority then
+		    if ( IsMinToMax and parentPriority <= priority ) or ( IsMaxToMin and parentPriority >= priority ) then
 		      //
 		      // We're done
 		      //
@@ -74,17 +69,8 @@ Protected Class PriorityQueue_MTC
 
 	#tag Method, Flags = &h0, Description = 5768656E206D696E546F4D61782020697320547275652C2077696C6C2072657475726E2061205072696F726974792076616C7565206F662031206265666F726520612076616C7565206F66203130302E205768656E2046616C73652C2076616C7565203130302077696C6C2062652072657475726E6564206265666F72652076616C756520312E
 		Sub Constructor(minToMax As Boolean = True)
-		  if minToMax then
-		    PriorityBase = 0
-		    PriorityMultiplier = -1
-		  else
-		    #if Target64Bit
-		      PriorityBase = &h7FFFFFFFFFFFFFFF
-		    #else
-		      PriorityBase = &h7FFFFFFF
-		    #endif
-		    PriorityMultiplier = 1
-		  end if
+		  IsMinToMax = minToMax
+		  IsMaxToMin = not minToMax
 		  
 		  Clear
 		  
@@ -115,7 +101,7 @@ Protected Class PriorityQueue_MTC
 		  //
 		  // Shuffle the tree
 		  //
-		  var priority as integer = Priorities( LastIndex )
+		  var priority as double = Priorities( LastIndex )
 		  var value as variant = Values( LastIndex )
 		  Values( LastIndex ) = nil // Remove any references
 		  LastIndex = LastIndex - 1
@@ -135,17 +121,22 @@ Protected Class PriorityQueue_MTC
 		    
 		    var rightChildIndex as integer = leftChildIndex + 1
 		    
-		    var leftPriority as integer = Priorities( leftChildIndex )
-		    var rightPriority as integer = if( rightChildIndex <= LastIndex, Priorities( rightChildIndex ), priority )
+		    var leftPriority as double = Priorities( leftChildIndex )
+		    var rightPriority as double = if( rightChildIndex <= LastIndex, Priorities( rightChildIndex ), priority )
 		    
-		    if priority <= leftPriority and priority <= rightPriority then
+		    if ( IsMinToMax and priority <= leftPriority and priority <= rightPriority ) or _
+		      ( IsMaxToMin and priority >= leftPriority and priority >= rightPriority ) then
 		      //
 		      // We're done
 		      //
 		      exit
 		    end if
 		    
-		    var swapIndex as integer = if( rightPriority < leftPriority, rightChildIndex, leftChildIndex )
+		    
+		    var swapIndex as integer = _
+		    if( ( IsMinToMax and rightPriority < leftPriority ) or ( IsMaxToMin and rightPriority > leftPriority ), _
+		    rightChildIndex, _
+		    leftChildIndex )
 		    
 		    Priorities( index ) = Priorities( swapIndex )
 		    Values( index ) = Values( swapIndex )
@@ -188,10 +179,10 @@ Protected Class PriorityQueue_MTC
 		  
 		  for i as integer = 1 to LastIndex
 		    var parentIndex as integer = ( i - 1 ) \ 2
-		    var thisPriority as integer = Priorities( i )
-		    var parentPriority as integer = Priorities( parentIndex )
+		    var thisPriority as double = Priorities( i )
+		    var parentPriority as double = Priorities( parentIndex )
 		    
-		    if thisPriority < parentPriority then
+		    if ( IsMinToMax and thisPriority < parentPriority ) or ( IsMaxToMin and thisPriority > parentPriority ) then
 		      return "Improper entry at index " + i.ToString + ": " + _
 		      "Priority is " + thisPriority.ToString + " but parent priority is " + parentPriority.ToString
 		    end if
@@ -212,6 +203,14 @@ Protected Class PriorityQueue_MTC
 	#tag EndComputedProperty
 
 	#tag Property, Flags = &h21
+		Private IsMaxToMin As Boolean
+	#tag EndProperty
+
+	#tag Property, Flags = &h21
+		Private IsMinToMax As Boolean
+	#tag EndProperty
+
+	#tag Property, Flags = &h21
 		Private LastIndex As Integer = -1
 	#tag EndProperty
 
@@ -222,18 +221,13 @@ Protected Class PriorityQueue_MTC
 			    return -1
 			  end if
 			  
-			  var priority as integer = Priorities( 0 )
-			  
-			  //
-			  // Adjust
-			  //
-			  priority = ( PriorityBase - priority ) * PriorityMultiplier
+			  var priority as double = Priorities( 0 )
 			  
 			  return priority
 			  
 			End Get
 		#tag EndGetter
-		PeekPriority As Integer
+		PeekPriority As Double
 	#tag EndComputedProperty
 
 	#tag ComputedProperty, Flags = &h0, Description = 5468652056616C75652061742074686520746F70206F66207468652051756575652E
@@ -247,15 +241,7 @@ Protected Class PriorityQueue_MTC
 	#tag EndComputedProperty
 
 	#tag Property, Flags = &h21
-		Private Priorities() As Integer
-	#tag EndProperty
-
-	#tag Property, Flags = &h21
-		Private PriorityBase As Integer
-	#tag EndProperty
-
-	#tag Property, Flags = &h21
-		Private PriorityMultiplier As Integer
+		Private Priorities() As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
@@ -321,7 +307,7 @@ Protected Class PriorityQueue_MTC
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
-			Type="Integer"
+			Type="Double"
 			EditorType=""
 		#tag EndViewProperty
 	#tag EndViewBehavior

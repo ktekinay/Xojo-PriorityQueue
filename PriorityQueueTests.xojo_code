@@ -1,6 +1,7 @@
 #tag Class
 Protected Class PriorityQueueTests
 Inherits TestGroup
+	#tag CompatibilityFlags = (TargetConsole and (Target32Bit or Target64Bit)) or  (TargetWeb and (Target32Bit or Target64Bit)) or  (TargetDesktop and (Target32Bit or Target64Bit)) or  (TargetIOS and (Target64Bit)) or  (TargetAndroid and (Target64Bit))
 	#tag Method, Flags = &h0
 		Sub AddTest()
 		  var arrCount as integer = 100
@@ -35,7 +36,7 @@ Inherits TestGroup
 		  next
 		  
 		  var spy as new ObjectSpy( pq )
-		  var parr() as integer = spy.Priorities
+		  var parr() as double = spy.Priorities
 		  var pCount as integer = parr.Count
 		  var varr() as object = spy.Values
 		  var vCount as integer = varr.Count
@@ -62,7 +63,7 @@ Inherits TestGroup
 		  var pq as new PriorityQueue_MTC
 		  var spy as new ObjectSpy( pq )
 		  
-		  var priorities() as integer = spy.Priorities
+		  var priorities() as double = spy.Priorities
 		  var priorityCount as integer = priorities.Count
 		  
 		  var values() as variant = spy.Values
@@ -90,31 +91,31 @@ Inherits TestGroup
 		  pq.Add 2, 6
 		  pq.Add 3, 7
 		  
-		  Assert.AreEqual 1, pq.PeekPriority
+		  Assert.AreEqual 1.0, pq.PeekPriority
 		  
 		  call pq.Pop
 		  
-		  Assert.AreEqual 1, pq.PeekPriority
+		  Assert.AreEqual 1.0, pq.PeekPriority
 		  
 		  call pq.Pop
 		  
-		  Assert.AreEqual 1, pq.PeekPriority
+		  Assert.AreEqual 1.0, pq.PeekPriority
 		  
 		  call pq.Pop
 		  
-		  Assert.AreEqual 2, pq.PeekPriority
+		  Assert.AreEqual 2.0, pq.PeekPriority
 		  
 		  call pq.Pop
 		  
-		  Assert.AreEqual 2, pq.PeekPriority
+		  Assert.AreEqual 2.0, pq.PeekPriority
 		  
 		  call pq.Pop
 		  
-		  Assert.AreEqual 3, pq.PeekPriority
+		  Assert.AreEqual 3.0, pq.PeekPriority
 		  
 		  call pq.Pop
 		  
-		  Assert.AreEqual 3, pq.PeekPriority
+		  Assert.AreEqual 3.0, pq.PeekPriority
 		  
 		End Sub
 	#tag EndMethod
@@ -122,7 +123,7 @@ Inherits TestGroup
 	#tag Method, Flags = &h0
 		Sub MassiveAddTest()
 		  var arrCount as integer = 100000
-		  var sourceArr() as integer
+		  var sourceArr() as double
 		  for i as integer = 1 to arrCount
 		    sourceArr.Add ( ( i - 1 ) mod 1000 ) + 1
 		  next
@@ -150,7 +151,7 @@ Inherits TestGroup
 		  
 		  sw.Reset
 		  
-		  for each expected as integer in sourceArr
+		  for each expected as double in sourceArr
 		    if pq.PeekPriority <> expected then 
 		      Assert.AreEqual expected, pq.PeekPriority
 		    end if
@@ -176,7 +177,7 @@ Inherits TestGroup
 	#tag Method, Flags = &h0
 		Sub MaxToMinTest()
 		  var arrCount as integer = 100
-		  var sourceArr() as integer
+		  var sourceArr() as double
 		  for i as integer = 1 to arrCount
 		    sourceArr.Add i
 		  next
@@ -198,9 +199,17 @@ Inherits TestGroup
 		    sourceArr.Sort
 		    
 		    for i as integer = sourceArr.LastIndex downto 0
-		      Assert.AreEqual sourceArr( i ), pq.PeekPriority
-		      var value as integer = pq.Pop
-		      Assert.AreEqual sourceArr( i ), value
+		      Assert.AreEqual "", spy.Validate.StringValue, "Failed at " + i.ToString
+		      if Assert.Failed then
+		        exit
+		      end if
+		      
+		      var expected as double = sourceArr( i )
+		      var actualPriority as double = pq.PeekPriority
+		      Assert.AreEqual expected, actualPriority
+		      
+		      var actualValue as double = pq.Pop
+		      Assert.AreEqual expected, actualValue
 		    next
 		  next
 		  
@@ -216,22 +225,22 @@ Inherits TestGroup
 		  pq.Add 1, 1000
 		  pq.Add 2, 2000
 		  
-		  Assert.AreEqual 1, pq.PeekPriority
+		  Assert.AreEqual 1.0, pq.PeekPriority
 		  Assert.AreEqual 1000, pq.PeekValue.IntegerValue
 		  
 		  call pq.Pop
 		  
-		  Assert.AreEqual 2, pq.PeekPriority
+		  Assert.AreEqual 2.0, pq.PeekPriority
 		  Assert.AreEqual 2000, pq.PeekValue.IntegerValue
 		  
 		  call pq.Pop
 		  
-		  Assert.AreEqual 5, pq.PeekPriority
+		  Assert.AreEqual 5.0, pq.PeekPriority
 		  Assert.AreEqual 5000, pq.PeekValue.IntegerValue
 		  
 		  call pq.Pop
 		  
-		  Assert.AreEqual 10, pq.PeekPriority
+		  Assert.AreEqual 10.0, pq.PeekPriority
 		  Assert.AreEqual 10000, pq.PeekValue.IntegerValue
 		  
 		  
