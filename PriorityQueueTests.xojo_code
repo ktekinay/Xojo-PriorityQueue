@@ -83,40 +83,107 @@ Inherits TestGroup
 	#tag Method, Flags = &h0
 		Sub DuplicatePriorityTest()
 		  var pq as new PriorityQueue_MTC
-		  pq.Add 1, 1
-		  pq.Add 1, 2
-		  pq.Add 2, 3
-		  pq.Add 3, 4
-		  pq.Add 1, 5
-		  pq.Add 2, 6
-		  pq.Add 3, 7
+		  pq.Add 1.0, 1
+		  pq.Add 1.0, 2
+		  pq.Add 2.0, 3
+		  pq.Add 3.0, 4
+		  pq.Add 1.0, 5
+		  pq.Add 2.0, 6
+		  pq.Add 3.0, 7
+		  
+		  var valueArr() as integer
+		  
+		  // 1.0
+		  valueArr = array( 1, 2, 5 )
 		  
 		  Assert.AreEqual 1.0, pq.PeekPriority
-		  
-		  call pq.Pop
-		  
-		  Assert.AreEqual 1.0, pq.PeekPriority
-		  
-		  call pq.Pop
+		  Assert.IsTrue ValidateAndRemove( pq.Pop.IntegerValue, valueArr )
 		  
 		  Assert.AreEqual 1.0, pq.PeekPriority
+		  Assert.IsTrue ValidateAndRemove( pq.Pop.IntegerValue, valueArr )
 		  
-		  call pq.Pop
+		  Assert.AreEqual 1.0, pq.PeekPriority
+		  Assert.IsTrue ValidateAndRemove( pq.Pop.IntegerValue, valueArr )
+		  
+		  Assert.IsTrue valueArr.Count = 0
+		  
+		  // 2.0
+		  valueArr = array( 3, 6 )
 		  
 		  Assert.AreEqual 2.0, pq.PeekPriority
-		  
-		  call pq.Pop
+		  Assert.IsTrue ValidateAndRemove( pq.Pop.IntegerValue, valueArr )
 		  
 		  Assert.AreEqual 2.0, pq.PeekPriority
+		  Assert.IsTrue ValidateAndRemove( pq.Pop.IntegerValue, valueArr )
 		  
-		  call pq.Pop
+		  Assert.IsTrue valueArr.Count = 0
+		  
+		  // 3.0
+		  valueArr = array( 4, 7 )
 		  
 		  Assert.AreEqual 3.0, pq.PeekPriority
-		  
-		  call pq.Pop
+		  Assert.IsTrue ValidateAndRemove( pq.Pop.IntegerValue, valueArr )
 		  
 		  Assert.AreEqual 3.0, pq.PeekPriority
+		  Assert.IsTrue ValidateAndRemove( pq.Pop.IntegerValue, valueArr )
 		  
+		  Assert.IsTrue valueArr.Count = 0
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub MassiveAddMaxToMinTest()
+		  var arrCount as integer = 100000
+		  var sourceArr() as double
+		  for i as integer = 1 to arrCount
+		    sourceArr.Add ( ( i - 1 ) mod 1000 ) + 1
+		  next
+		  
+		  sourceArr.Shuffle
+		  
+		  var pq as new PriorityQueue_MTC( false )
+		  
+		  var sw as new Stopwatch_MTC
+		  sw.Start
+		  
+		  for i as integer = 0 to sourceArr.LastIndex
+		    pq.Add sourceArr( i ), i
+		    sw.Lap
+		  next
+		  
+		  sw.Stop
+		  Assert.Message "Average add: " + sw.AverageLapMicroseconds.ToString( "#,##0.00" ) + " µs"
+		  
+		  sourceArr.Sort
+		  
+		  var spy as new ObjectSpy( pq )
+		  
+		  var cycle as integer
+		  
+		  sw.Reset
+		  
+		  for i as integer = sourceArr.LastIndex downto 0
+		    var expected as double = sourceArr( i )
+		    if pq.PeekPriority <> expected then 
+		      Assert.AreEqual expected, pq.PeekPriority
+		    end if
+		    
+		    sw.Start
+		    call pq.Pop
+		    sw.Stop
+		    
+		    cycle = cycle + 1
+		    if cycle = 1000 then
+		      Assert.AreEqual "", spy.Validate.StringValue
+		      cycle = 0
+		    end if
+		  next
+		  
+		  Assert.AreEqual 0, pq.Count
+		  
+		  var avg as double = sw.ElapsedMicroseconds / sourceArr.Count
+		  Assert.Message "Average pop: " + avg.ToString( "#,##0.00" ) + " µs"
 		End Sub
 	#tag EndMethod
 
@@ -345,6 +412,19 @@ Inherits TestGroup
 		  call pq.Pop
 		  Assert.IsNil wr.Value
 		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h21
+		Private Function ValidateAndRemove(value As Integer, sourceArr() As Integer) As Boolean
+		  var i as integer = sourceArr.IndexOf( value )
+		  if i <> -1 then
+		    sourceArr.RemoveAt i
+		    return true
+		  else
+		    return false
+		  end if
+		  
+		End Function
 	#tag EndMethod
 
 
