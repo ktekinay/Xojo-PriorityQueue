@@ -12,13 +12,13 @@ Open the included `PriorityQueue Harness` project and copy `PriorityQueue_MTC` i
 
 ## Usage
 
-Create a new min-to-max Queue, e.g., a value with a priority of 1 will be returned before one with a priority of 10:
+Create a new min-to-max Queue, e.g., a value with a priority of 1.0 will be returned before one with a priority of 10.0:
 
 ```
 var pq as new PriorityQueue_MTC
 ```
 
-Or a max-to-min Queue, e.g., a value with a priority of 10 will be returned before one with a priority of 1:
+Or a max-to-min Queue, e.g., a value with a priority of 10.0 will be returned before one with a priority of 1.0:
 
 ```
 var pq as new PriorityQueue_MTC( false )
@@ -27,9 +27,9 @@ var pq as new PriorityQueue_MTC( false )
 Add items to the Queue:
 
 ```
-pq.Add 1, "First priority"
-pq.Add 10, "Last priority"
-pq.Add 5, "Middle priority"
+pq.Add 1.0, "First priority"
+pq.Add 10.0, "Last priority"
+pq.Add 5.0, "Middle priority"
 ```
 
 Retrieve items from the Queue:
@@ -46,12 +46,12 @@ value = pq.Pop // "Last priority"
 You can look ahead to get information about the value at the top of the queue:
 
 ```
-var priority as integer = pq.PeekPriority // 1
+var priority as integer = pq.PeekPriority // 1.0
 var value as variant = pq.PeekValue // "First priority"
 
 call pq.Pop // Removes the top item
 
-priority = pq.PeekPriority // 5
+priority = pq.PeekPriority // 5.0
 value = pq.PeekValue // "Middle priority"
 ```
 
@@ -74,6 +74,15 @@ All contributions to this project will be gratefully considered. Fork this repo 
 All comments are also welcome.
 
 ## Release Notes
+
+### 1.1 (Sept. 27, 2023)
+
+- Priorites are now doubles instead of integers.
+- When `Count` drops to 0, reduce the sizes of the arrays if needed.
+- Better handling of max-to-min queues.
+- When empty, `PeekPriority` will return NaN.
+- More and better tests.
+- Better method and property descriptions.
 
 #### 1.0 (Feb. 26, 2023)
 
