@@ -227,7 +227,8 @@ Protected Class PriorityQueue_MTC
 		#tag Getter
 			Get
 			  if LastIndex = -1 then
-			    return -1
+			    static nan as double = val( "NaN" )
+			    return nan
 			  end if
 			  
 			  var priority as double = Priorities( 0 )

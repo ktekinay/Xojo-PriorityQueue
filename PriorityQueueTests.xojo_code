@@ -361,7 +361,15 @@ Inherits TestGroup
 		  Assert.AreEqual 10.0, pq.PeekPriority
 		  Assert.AreEqual 10000, pq.PeekValue.IntegerValue
 		  
+		  call pq.Pop
 		  
+		  Assert.AreEqual 20.0, pq.PeekPriority
+		  Assert.AreEqual 20000, pq.PeekValue.IntegerValue
+		  
+		  call pq.Pop
+		  
+		  Assert.IsTrue pq.PeekPriority.IsNotANumber
+		  Assert.IsTrue pq.PeekValue.IsNull
 		End Sub
 	#tag EndMethod
 
