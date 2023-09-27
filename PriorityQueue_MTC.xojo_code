@@ -15,8 +15,7 @@ Protected Class PriorityQueue_MTC
 		    // Expand arrays
 		    //
 		    var expandTo as integer = min( Priorities.Count * 2, Priorities.Count + 2048 )
-		    Priorities.ResizeTo expandTo - 1
-		    Values.ResizeTo Priorities.LastIndex
+		    ResizeTo expandTo - 1
 		  end if
 		  
 		  Priorities( LastIndex ) = priority
@@ -57,10 +56,8 @@ Protected Class PriorityQueue_MTC
 
 	#tag Method, Flags = &h0, Description = 526573657473207468652051756575652E
 		Sub Clear()
-		  Priorities.ResizeTo 127
-		  
 		  Values.RemoveAll
-		  Values.ResizeTo Priorities.LastIndex
+		  ResizeTo kInitialLastIndex
 		  
 		  LastIndex = -1
 		  
@@ -95,6 +92,14 @@ Protected Class PriorityQueue_MTC
 		  if LastIndex = 0 then
 		    Values( 0 ) = nil
 		    LastIndex = -1
+		    
+		    //
+		    // Save some memory
+		    //
+		    if Priorities.LastIndex > kInitialLastIndex then
+		      ResizeTo kInitialLastIndex
+		    end if
+		    
 		    return returnValue
 		  end if
 		  
@@ -150,6 +155,14 @@ Protected Class PriorityQueue_MTC
 		  return returnValue
 		  
 		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h21
+		Private Sub ResizeTo(index As Integer)
+		  Priorities.ResizeTo index
+		  Values.ResizeTo index
+		  
+		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h21
@@ -248,6 +261,9 @@ Protected Class PriorityQueue_MTC
 		Private Values() As Variant
 	#tag EndProperty
 
+
+	#tag Constant, Name = kInitialLastIndex, Type = Double, Dynamic = False, Default = \"127", Scope = Private
+	#tag EndConstant
 
 	#tag Constant, Name = kVersion, Type = String, Dynamic = False, Default = \"1.0", Scope = Public
 	#tag EndConstant

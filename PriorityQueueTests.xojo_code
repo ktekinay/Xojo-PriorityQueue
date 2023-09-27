@@ -217,6 +217,33 @@ Inherits TestGroup
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Sub MemoryReclamationTest()
+		  const kItemCount as integer = 10000
+		  
+		  var pq as new PriorityQueue_MTC
+		  var spy as new ObjectSpy( pq )
+		  
+		  for i as integer = 1 to kItemCount
+		    pq.Add i, i
+		  next
+		  
+		  var priorities() as double = spy.Priorities
+		  var values() as variant = spy.Values
+		  
+		  Assert.IsTrue priorities.LastIndex >= kItemCount
+		  Assert.IsTrue values.Count = priorities.Count
+		  
+		  while pq.Count <> 0
+		    call pq.Pop
+		  wend
+		  
+		  Assert.IsTrue priorities.LastIndex = 127
+		  Assert.IsTrue values.Count = priorities.Count
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Sub PeekTest()
 		  var pq as new PriorityQueue_MTC
 		  pq.Add 10, 10000
