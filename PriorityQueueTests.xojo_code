@@ -244,6 +244,30 @@ Inherits TestGroup
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Sub OutOfBoundsExceptionTest()
+		  var pq as new PriorityQueue_MTC
+		  pq.Add 1.0, ""
+		  
+		  call pq.Pop
+		  
+		  #pragma BreakOnExceptions false
+		  try
+		    call pq.Pop
+		    Assert.Fail "No exception"
+		    
+		  catch err as OutOfBoundsException
+		    Assert.Pass
+		    
+		  catch err as RuntimeException
+		    Assert.Fail "Wrong exception, type " + Introspection.GetType( err ).Name
+		    
+		  end try
+		  #pragma BreakOnExceptions default
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Sub PeekTest()
 		  var pq as new PriorityQueue_MTC
 		  pq.Add 10, 10000

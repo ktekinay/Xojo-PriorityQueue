@@ -83,10 +83,6 @@ Protected Class PriorityQueue_MTC
 		    #pragma StackOverflowChecking false
 		  #endif
 		  
-		  if LastIndex = -1 then
-		    raise new OutOfBoundsException
-		  end if
-		  
 		  var returnValue as variant = Values( 0 )
 		  
 		  if LastIndex = 0 then
@@ -106,7 +102,7 @@ Protected Class PriorityQueue_MTC
 		  //
 		  // Shuffle the tree
 		  //
-		  var priority as double = Priorities( LastIndex )
+		  var priority as double = Priorities( LastIndex ) // If the queue was empty, this will raise an OutOfBoundsException
 		  var value as variant = Values( LastIndex )
 		  Values( LastIndex ) = nil // Remove any references
 		  LastIndex = LastIndex - 1
